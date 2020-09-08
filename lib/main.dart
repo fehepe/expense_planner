@@ -1,3 +1,5 @@
+import './widgets/chart.dart';
+
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +20,12 @@ class MyApp extends StatelessWidget {
         accentColorBrightness: Brightness.dark,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                  fontFamily: 'Open Sans',
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
+              title: TextStyle(
+                fontFamily: 'Open Sans',
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
               ),
+            ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
@@ -59,6 +61,18 @@ class _MyHomePageState extends State<MyHomePage> {
     //   date: DateTime.now(),
     // ),
   ];
+
+  List<Transaction> get _recentTx {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(
+            days: 7,
+          ),
+        ),
+      );
+    }).toList();
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -104,14 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              child: Card(
-                color: Theme.of(context).primaryColor,
-                child: Text('CHART'),
-              ),
-            ),
+            Chart(_recentTx),
             TransactionList(_userTransactions),
           ],
         ),
